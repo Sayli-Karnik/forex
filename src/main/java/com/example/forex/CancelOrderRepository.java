@@ -22,6 +22,7 @@ public class CancelOrderRepository {
     public Orders cancelOrder(CancelOrder corder) {
     	Orders temp=new Orders();
     	int key= corder.oid;
+    	if(user_exists(corder.getUsername(),corder.getPassword())){
     temp = jdbcTemplate.queryForObject("select * from ORDERS where OID=?", 
 				new Object[]{key}, new CancelRowMapper());
     	//System.out.println("blah blah blah blah"+temp.getType());
@@ -29,13 +30,21 @@ public class CancelOrderRepository {
     temp.getUsername(), temp.getOrder_type(), temp.getPrice(), temp.getQty(), temp.getPair(), temp.getSide());
     
     jdbcTemplate.update("delete from ORDERS where OID=?", corder.oid);
-        
+    	}
    return temp;
     }
     
-    
+     boolean user_exists(String username, String password)
 
-}
+    {String sql= "select * from USERS where username=? and password=?";
+    	if(jdbcTemplate.queryForObject(sql, new Object[]{username, password},new UserRowMapper()) != null)
+    			return true;
+    	else return false;
+    }
+    
+    }
+
+
 
 class CancelRowMapper implements RowMapper<Orders>
 {
