@@ -1,7 +1,14 @@
 package com.example.forex;
 
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,30 +23,87 @@ public class TransactionOrderRepository {
 	      this.jdbcTemplate = jdbcTemplate;
 	    }
 
+		@Transactional(readOnly=true)
+		public List<TransactionOrder> findAllOrders() {
+			return jdbcTemplate.query("SELECT * FROM ORDERS", new OrderRowMapper());
+		}
+	    
 	    @Transactional
 	    public TransactionOrder saveOrder(TransactionOrder order) {
-	    jdbcTemplate.update("insert into SUC_TRANSACTION(USERNAME, CID, QUANTITY, AMOUNT, STATUS) values (?,?,?,?,'m')", 
-	    order.getUsername(), order.getCid(), order.getQuantity(), order.getAmount());
+	    	String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+	    	
+if(user_exists(order.getUsername(),order.getPassword()))
+	    	jdbcTemplate.update("insert into ORDERS(USERNAME, ORDER_TYPE, PRICE, QTY, PAIR, SIDE, TIME_STAMP,) values (?,?,?,?,?,?,?)", 
+	    order.getUsername(), order.getOrder_type(), order.getPrice(), order.getQuantity(),order.getPair(), order.getSide(), timeStamp);
 	        
 	   return order;
 	    }
 
 //	    @Transactional(readOnly=true)
 //	    public List<TransactionOrder> findAllOrders() {
-//	        return jdbcTemplate.query("select CURRENCY, AMOUNT, SIDE from MARKET_ORDERS",
+//	        return jdbcTemplate.query("select TransactionOrder, AMOUNT, SIDE from MARKET_ORDERS",
 //	                (new RowMapper<TransactionOrder>() {
 //
 //	                    @Override
 //	                    public TransactionOrder mapRow(ResultSet rs, int rowNum) throws SQLException {
 //	                      TransactionOrder order = new TransactionOrder();
-//	                      order.setCurrency(Currency.valueOf(rs.getString("CURRENCY")));
+//	                      order.setTransactionOrder(TransactionOrder.valueOf(rs.getString("TransactionOrder")));
 //	                      order.setAmount(rs.getDouble("AMOUNT"));
 //	                      order.setSide(Side.valueOf(rs.getString("SIDE")));
 //	                      return order;
 //	                    }
 //
 //	                }));
+	    public boolean user_exists(String username, String password)
+
+	    {String sql= "select * from USERS where username=? and password=?";
+	    	if(jdbcTemplate.queryForObject(sql, new Object[]{username, password},new UserRowMapper()) != null)
+	    			return true;
+	    	else return false;
 	    }
+	    
+	    }
+
+class UserRowMapper implements RowMapper<User>
+
+{
+	 @Override
+	public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+       User user = new User();
+       user.setUsername(rs.getString("USERNAME"));
+       user.setPassword(rs.getString("PASSWORD"));
+      return user;
+     }	
+}
+
+class OrderRowMapper implements RowMapper<TransactionOrder>
+{
+	@Override
+	public TransactionOrder mapRow(ResultSet rs, int rowNum) throws SQLException{
+		TransactionOrder order = new TransactionOrder();
+
+		order.setUsername(rs.getString("USERNAME"));
+		//order.setPassword(rs.getString("PASSWORD"));
+		order.setOid(rs.getInt("OID"));
+		order.setSide(rs.getString("SIDE"));
+		order.setOrder_type(rs.getString("ORDER_TYPE"));
+		order.setPair(rs.getString("PAIR"));
+		order.setPrice(rs.getDouble("PRICE"));
+		order.setQuantity(rs.getInt("QTY"));
+		//order.set(rs.getString("TIME_STAMP"));
+		return order;
+	}
+}
+//{
+//    "username": "SAYLI",
+//    "order_type": "market",
+//    "price": 2,
+//    "quantity": 50,
+//    "pair": "EUR/USD",
+//    "side": "buy",
+//   "password":"Sbc@123"
+//}
+
 
 		
 
