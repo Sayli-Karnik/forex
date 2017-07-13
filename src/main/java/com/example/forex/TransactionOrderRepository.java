@@ -38,6 +38,32 @@ if(user_exists(order.getUsername(),order.getPassword()))
 	        
 	   return order;
 	    }
+	    
+	    
+	    @Transactional
+		public User addUser(User username) {
+			
+			System.out.println("Password must satisfy following criteria:");
+			System.out.println("Password must contain atleast one LowerCase Character");
+			System.out.println("Password must contain atleast one UpperCase Character");
+			System.out.println("Password must contain atleast one Special Character [@,#,$,%]");
+			System.out.println("Password must contain atleast one Numeral");
+			System.out.println("Password must have length between 6 to 20 charactes");
+			
+			final String sql = "INSERT INTO USERS(username,password) values(?,?)";
+			PasswordValidator pwd = new PasswordValidator();
+			if(pwd.validate(username.getPassword()) == true){
+			jdbcTemplate.update(sql, username.getUsername(), pwd.md5(username.getPassword()));
+			System.out.println("User Registered Succesfully");
+			}
+			else 
+			{
+				System.out.println("Please Enter a Valid Password");
+			}
+			return username;
+		}
+	    
+	    
 
 //	    @Transactional(readOnly=true)
 //	    public List<TransactionOrder> findAllOrders() {

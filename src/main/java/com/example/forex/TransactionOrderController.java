@@ -33,7 +33,11 @@ public class TransactionOrderController {
 	{
 		return trans.findAllOrders();
 	}
-    
+    @RequestMapping(value = "/newuser", method = RequestMethod.POST)
+	public void UserRegistration(@RequestBody User user) 
+	{
+		trans.addUser(user);
+	} 
 
     
 
