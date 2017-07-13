@@ -44,7 +44,7 @@ public class TransactionOrderRepository {
 			final String sql = "INSERT INTO USERS(username,password) values(?,?)";
 			PasswordValidator pwd = new PasswordValidator();
 			if(pwd.validate(username.getPassword()) == true){
-			jdbcTemplate.update(sql, username.getUsername(), pwd.md5(username.getPassword()));
+			jdbcTemplate.update(sql, username.getUsername(),username.getPassword());
 			System.out.println("User Registered Succesfully");
 			}
 			else 
