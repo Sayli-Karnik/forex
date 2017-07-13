@@ -39,6 +39,4 @@ public class TransactionOrderController {
 		trans.addUser(user);
 	} 
 
-    
-
 }

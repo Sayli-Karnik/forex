@@ -233,15 +233,7 @@ SQLException {
       return order;
      }
 }
-//{
-//    "username": "SAYLI",
-//    "order_type": "market",
-//    "price": 2,
-//    "quantity": 50,
-//    "pair": "EUR/USD",
-//    "side": "buy",
-//   "password":"Sbc@123"
-//}
+
 
 
 class UserRow implements RowMapper<OpenClosedOrders>
@@ -255,3 +247,13 @@ class UserRow implements RowMapper<OpenClosedOrders>
      }
 }
 
+
+//{
+//"username": "SAYLI",
+//"order_type": "market",
+//"price": 2,
+//"quantity": 50,
+//"pair": "EUR/USD",
+//"side": "buy",
+//"password":"Sbc@123"
+//}
